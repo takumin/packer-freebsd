@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder ".", "/usr/local/vagrant", type: "rsync",
     rsync__args: ["--verbose", "--archive", "--delete", "-zz"],
-    rsync__exclude: [".gitignore", ".git/", ".vagrant/"]
+    rsync__exclude: [".gitignore", "*.box", ".git/", ".vagrant/", "packer_cache/"]
 
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--hwvirtex", "on"]

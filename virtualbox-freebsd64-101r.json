@@ -1,0 +1,51 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "vm_name": "freebsd64-101r",
+      "boot_wait": "5s",
+      "hard_drive_interface": "sata",
+      "disk_size": 8192,
+      "guest_os_type": "FreeBSD_64",
+      "guest_additions_mode": "disable",
+      "iso_checksum": "0c3d64ce48c3ef761761d0fea07e1935e296f8c045c249118bc91a7faf053a6b",
+      "iso_checksum_type": "sha256",
+      "iso_url": "http://ftp.jp.freebsd.org/pub/FreeBSD/ISO-IMAGES-amd64/10.1/FreeBSD-10.1-RELEASE-amd64-disc1.iso",
+      "iso_interface": "sata",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "shutdown_command": "shutdown -p now",
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory",   "512"    ],
+        [ "modifyvm", "{{.Name}}", "--cpus",     "1"      ],
+        [ "modifyvm", "{{.Name}}", "--nictype1", "virtio" ],
+        [ "modifyvm", "{{.Name}}", "--audio",    "none"   ],
+        [ "modifyvm", "{{.Name}}", "--usb",      "off"    ]
+      ],
+      "http_directory": ".",
+      "boot_command": [
+        "<enter><wait10><wait5>",
+        "l<enter><wait>",
+        "root<enter><wait>",
+        "dhclient vtnet0<enter><wait5>",
+        "fetch -o /tmp/install.sh http://{{.HTTPIP}}:{{.HTTPPort}}/preinstall.sh && sh /tmp/install.sh {{.Name}} virtualbox<enter>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "postinstall.sh",
+      "execute_command": "{{ .Vars }} sudo -E -S sh '{{ .Path }}'"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "only": ["virtualbox-iso"],
+      "output": "freebsd64-101r.box"
+    }
+  ]
+}

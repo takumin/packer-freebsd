@@ -33,7 +33,6 @@ __EOF__
 # initial configure
 sysrc -R /mnt hostname=${NAME}
 sysrc -R /mnt ifconfig_vtnet0=DHCP
-sysrc -R /mnt ifconfig_vtnet1="inet 10.0.0.10"
 sysrc -R /mnt sshd_enable=YES
 
 # nfsv4 server configure
